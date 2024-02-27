@@ -6,9 +6,18 @@ services:
     container_name: curso-db
     restart: always
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - .docker/dbdata:/var/lib/postgres/data
+    environment:
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DB=curso-db
+  dbtest:
+    build: .
+    container_name: teste-curso-db
+    restart: always
+    ports:
+      - '5433:5432'
     environment:
       - POSTGRES_PASSWORD=docker
       - POSTGRES_DB=curso-db
