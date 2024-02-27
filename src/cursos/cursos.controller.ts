@@ -35,9 +35,11 @@ export class CursosController {
 
   @Get('/tag/:nome')
   async findByTagName(@Param('nome') nome: string, @Res() response) {
+    const tag = await this.cursosService.findByTagName(nome);
+
     return response
       .status(HttpStatus.OK)
-      .json({ content: await this.cursosService.findByTagName(nome) });
+      .json({ count: tag.cursos.length, content: tag });
   }
 
   @Post()

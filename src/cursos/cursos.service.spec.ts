@@ -19,13 +19,6 @@ describe('CursosService Testes Unitários', () => {
     idTag = randomUUID();
     idCurso = randomUUID();
     criadoEm = new Date();
-    retornoTags = [
-      {
-        id: idTag,
-        nome: 'typescript',
-        criadoEm: criadoEm,
-      },
-    ];
 
     retornoCursos = [
       {
@@ -34,6 +27,15 @@ describe('CursosService Testes Unitários', () => {
         descricao: 'Descrição do Curso 3',
         criadoEm: criadoEm,
         tags: retornoTags,
+      },
+    ];
+
+    retornoTags = [
+      {
+        id: idTag,
+        nome: 'typescript',
+        criadoEm: criadoEm,
+        cursos: retornoCursos,
       },
     ];
 
@@ -85,7 +87,7 @@ describe('CursosService Testes Unitários', () => {
     expect(retornoCursos).toStrictEqual(curso);
   });
 
-  it('Buscar um Curso', async () => {
+  it('Buscar um Curso pelo id', async () => {
     //@ts-expect-error defined part of methods
     service['cursoRepository'] = mockCursoRepository;
 
@@ -94,6 +96,17 @@ describe('CursosService Testes Unitários', () => {
     expect(mockCursoRepository.findOne).toHaveBeenCalled();
     expect(idCurso).toStrictEqual(curso.id);
     expect(retornoCursos[0]).toStrictEqual(curso);
+  });
+
+  it('Buscar um Curso pela Tag', async () => {
+    //@ts-expect-error defined part of methods
+    service['tagRepository'] = mockTagRepository;
+
+    const tag = await service.findByTagName(retornoTags[0].nome);
+
+    expect(mockTagRepository.findOne).toHaveBeenCalled();
+    expect(idTag).toStrictEqual(tag.id);
+    expect(retornoCursos.length).toStrictEqual(tag.cursos.length);
   });
 
   it('Buscar um Curso HttpException', async () => {

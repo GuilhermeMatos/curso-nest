@@ -77,4 +77,61 @@ describe('CursosController (e2e)', () => {
       expect(conteudo.tags[2].nome).toEqual(data.tags[2]);
     });
   });
+
+  describe('GET /cursos', () => {
+    it('Listar todos Cursos', async () => {
+      const resposta = await request(app.getHttpServer())
+        .get('/cursos')
+        .expect(HttpStatus.OK);
+
+      const conteudo = resposta.body.content;
+
+      expect(resposta).toBeDefined();
+      expect(cursos.length).toEqual(resposta.body.count);
+      expect(cursos[0].id).toStrictEqual(conteudo[0].id);
+      expect(cursos[0].nome).toStrictEqual(conteudo[0].nome);
+      expect(cursos[0].descricao).toStrictEqual(conteudo[0].descricao);
+
+      conteudo.map((item) =>
+        expect(item).toEqual({
+          id: item.id,
+          nome: item.nome,
+          descricao: item.descricao,
+          tags: [...item.tags],
+          criadoEm: item.criadoEm,
+        }),
+      );
+    });
+  });
+
+  describe('GET /cursos/:id', () => {
+    it('Buscar um Curso pelo ID', async () => {
+      const resposta = await request(app.getHttpServer())
+        .get(`/cursos/${cursos[0].id}`)
+        .expect(HttpStatus.OK);
+
+      const conteudo = resposta.body.content;
+
+      expect(resposta).toBeDefined();
+      expect(cursos[0].id).toStrictEqual(conteudo.id);
+      expect(cursos[0].nome).toStrictEqual(conteudo.nome);
+      expect(cursos[0].descricao).toStrictEqual(conteudo.descricao);
+    });
+  });
+
+  describe('GET /cursos/tag/:nome', () => {
+    it('Buscar um Curso pela Tag', async () => {
+      const resposta = await request(app.getHttpServer())
+        .get(`/cursos/tag/${data.tags[0]}`)
+        .expect(HttpStatus.OK);
+
+      const conteudo = resposta.body.content;
+
+      expect(resposta).toBeDefined();
+      expect(cursos.length).toEqual(resposta.body.count);
+      expect(cursos[0].id).toStrictEqual(conteudo.cursos[0].id);
+      expect(cursos[0].nome).toStrictEqual(conteudo.cursos[0].nome);
+      expect(cursos[0].descricao).toStrictEqual(conteudo.cursos[0].descricao);
+    });
+  });
 });
